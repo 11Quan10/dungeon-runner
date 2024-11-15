@@ -9,19 +9,15 @@ namespace Unity.FPS.Game
         public GameObject straightSectionPrefab;  // Prefab for straight section
         public GameObject leftTurnSectionPrefab;        // Prefab for left turn section
         public GameObject rightTurnSectionPrefab;      // Prefab for right turn section
-        public GameObject Player;                  // Player transform to track movement
         public int maxGeneratedSections = 1;     // Number of sections to generate ahead
 
-        public Material floorMaterial; // floor texture
-        public Material wallMaterial; // floor texture
-
-
-        private int sectionLength = 18;            // Length of each section
-        private Vector3 lastPosition;
-        private Vector3 currentDirection = Vector3.forward;
-        private int sectionsGenerated = 0; 
-        private int currentTurns = 0;               // Current number of turns, used to indicate direction
-        private bool startSection = true;
+        int sectionLength = 18;            // Length of each section
+        Vector3 lastPosition;
+        Vector3 currentDirection = Vector3.forward;
+        int sectionsGenerated = 0; 
+        int currentTurns = 0;               // Current number of turns, used to indicate direction
+        bool startSection = true;
+        int straightSections = 0;
 
         void Start()
         {
@@ -31,11 +27,6 @@ namespace Unity.FPS.Game
 
         void Update()
         {
-            // Generate new sections as the player approaches the end of the current section
-            // if (Vector3.Distance(Player.position, lastPosition) < sectionLength * 2)
-            // {
-            //     GenerateSection();
-            // }
             GenerateSection();
         }
 
@@ -48,7 +39,6 @@ namespace Unity.FPS.Game
             GameObject newSection;
 
             if (startSection == true) {
-                Debug.Log("Start Position: " + lastPosition);
                 newSection = Instantiate(startSectionPrefab, lastPosition, Quaternion.LookRotation(currentDirection));
                 lastPosition += currentDirection * sectionLength; // Move to the next section position
 
@@ -57,74 +47,44 @@ namespace Unity.FPS.Game
                 return;
             }
             
-            if (randomValue < 0.7f) // 55% chance for a straight section
+            if (straightSections < 2 || randomValue < 0.7f)     // 70% chance for a straight section
             {
-                Debug.Log("Straight Position: " + lastPosition);
                 newSection = Instantiate(straightSectionPrefab, lastPosition, Quaternion.LookRotation(currentDirection));
+                straightSections++;
             }
             else                    // 30% chance for a 90-degree turn
             {
-                // if (Random.value < 0.5f)
-                // {
-                //     Debug.Log("Left Position: " + lastPosition);
-                //     newSection = Instantiate(leftTurnSectionPrefab, lastPosition, Quaternion.LookRotation(currentDirection));
-                //     currentDirection = Quaternion.Euler(0, -90, 0) * currentDirection;  // Left turn
-                // }
-                // else
-                // {
-                //     Debug.Log("Right Position: " + lastPosition);
-                //     newSection = Instantiate(rightTurnSectionPrefab, lastPosition, Quaternion.LookRotation(currentDirection));
-                //     currentDirection = Quaternion.Euler(0, 90, 0) * currentDirection;   // Right turn
-                // }
-
-                if (Random.value < 0.5f)
+                straightSections = 0;
+                if (currentTurns > 1)                       
                 {
-                    if (currentTurns >= 2) 
-                    {
-                        newSection = Instantiate(rightTurnSectionPrefab, lastPosition, Quaternion.LookRotation(currentDirection));
-                        currentDirection = Quaternion.Euler(0, 90, 0) * currentDirection;   // Right turn
+                    newSection = Instantiate(rightTurnSectionPrefab, lastPosition, Quaternion.LookRotation(currentDirection));
+                    currentDirection = Quaternion.Euler(0, 90, 0) * currentDirection;                   // Right turn
 
-                        currentTurns--;
-                    }
-                    else 
-                    {
-                        newSection = Instantiate(leftTurnSectionPrefab, lastPosition, Quaternion.LookRotation(currentDirection));
-                        currentDirection = Quaternion.Euler(0, -90, 0) * currentDirection;  // Left turn
+                    currentTurns = -1;
+                }
+                else if (currentTurns < -1)
+                {
+                    newSection = Instantiate(leftTurnSectionPrefab, lastPosition, Quaternion.LookRotation(currentDirection));
+                    currentDirection = Quaternion.Euler(0, -90, 0) * currentDirection;                  // Left turn
 
-                        currentTurns++;
-                    }
+                    currentTurns = 1;
                 }
                 else
                 {
-                    if (currentTurns <= -2)
-                    {
-                        newSection = Instantiate(leftTurnSectionPrefab, lastPosition, Quaternion.LookRotation(currentDirection));
-                        currentDirection = Quaternion.Euler(0, -90, 0) * currentDirection;  // Left turn
-
-                        currentTurns++;
-                    }
-                    else
+                    if (Random.value < 0.5f)
                     {
                         newSection = Instantiate(rightTurnSectionPrefab, lastPosition, Quaternion.LookRotation(currentDirection));
-                        currentDirection = Quaternion.Euler(0, 90, 0) * currentDirection;   // Right turn
+                        currentDirection = Quaternion.Euler(0, 90, 0) * currentDirection;                   // Right turn
 
                         currentTurns--;
                     }
-                    
-                }
-            }
+                    else
+                    {
+                        newSection = Instantiate(leftTurnSectionPrefab, lastPosition, Quaternion.LookRotation(currentDirection));
+                        currentDirection = Quaternion.Euler(0, -90, 0) * currentDirection;                  // Left turn
 
-            //code for rendering the floor and wall textures
-            Renderer[] renderers = newSection.GetComponentsInChildren<Renderer>();
-            foreach (Renderer renderer in renderers)
-            {
-                if (renderer.gameObject.name.Contains("Floor")) // Assumes the floor objects are named accordingly
-                {
-                    renderer.material = floorMaterial;
-                }
-                else if (renderer.gameObject.name.Contains("Wall")) // Assumes the wall objects are named accordingly
-                {
-                    renderer.material = wallMaterial;
+                        currentTurns++;
+                    }
                 }
             }
 
