@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace Unity.FPS.Game
@@ -9,6 +10,7 @@ namespace Unity.FPS.Game
         public GameObject straightSectionPrefab;  // Prefab for straight section
         public GameObject leftTurnSectionPrefab;        // Prefab for left turn section
         public GameObject rightTurnSectionPrefab;      // Prefab for right turn section
+        public GameObject Player;
         public int maxGeneratedSections = 1;     // Number of sections to generate ahead
 
         int sectionLength = 18;            // Length of each section
@@ -18,16 +20,22 @@ namespace Unity.FPS.Game
         int currentTurns = 0;               // Current number of turns, used to indicate direction
         bool startSection = true;
         int straightSections = 0;
+        Queue<GameObject> instantiatedSections;
 
         void Start()
         {
-            lastPosition = new Vector3(-35, 0, -10); // Starting point of the dungeon
+            instantiatedSections = new Queue<GameObject>();
+            lastPosition = Player.transform.position;        // Starting point of the dungeon
             GenerateSection();
         }
 
         void Update()
         {
-            GenerateSection();
+            // GenerateSection();
+            if (Vector3.Distance(Player.transform.position, lastPosition) < sectionLength * 3)
+            {
+                GenerateSection();
+            }
         }
 
         void GenerateSection()
@@ -40,11 +48,10 @@ namespace Unity.FPS.Game
 
             if (startSection == true) {
                 newSection = Instantiate(startSectionPrefab, lastPosition, Quaternion.LookRotation(currentDirection));
-                lastPosition += currentDirection * sectionLength; // Move to the next section position
 
                 startSection = false;
                 sectionsGenerated++;
-                return;
+                goto UpdateSection;
             }
             
             if (straightSections < 2 || randomValue < 0.7f)     // 70% chance for a straight section
@@ -88,6 +95,13 @@ namespace Unity.FPS.Game
                 }
             }
 
+        UpdateSection:
+            instantiatedSections.Enqueue(newSection);
+            if (instantiatedSections.Count >= 10)
+            {
+                Destroy(instantiatedSections.Dequeue());
+            }
+            
             lastPosition += currentDirection * sectionLength;
 
             sectionsGenerated++;
