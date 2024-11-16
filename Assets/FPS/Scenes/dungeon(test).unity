@@ -309,7 +309,6 @@ MonoBehaviour:
   rightTurnSectionPrefab: {fileID: 7527659755789409705, guid: 0f054c2812a421241bcf74d302321e24,
     type: 3}
   Player: {fileID: 1810510428}
-  maxGeneratedSections: 50
 --- !u!4 &1275770558
 Transform:
   m_ObjectHideFlags: 0
