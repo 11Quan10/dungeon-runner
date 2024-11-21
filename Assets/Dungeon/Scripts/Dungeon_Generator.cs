@@ -17,6 +17,8 @@ public class Dungeon_Generator : MonoBehaviour
     public GameObject open_wall_1;
     public GameObject open_wall_2;
 
+    public GameObject enemy;
+
     public int generation_radius = 3;
     public GameObject player;
 
@@ -42,10 +44,11 @@ public class Dungeon_Generator : MonoBehaviour
 
         if (newX != x || newY != y) {
 
-            reloadSections();
-
             x = newX;
             y = newY;
+
+            reloadSections();
+
         }
     }
 
@@ -56,11 +59,17 @@ public class Dungeon_Generator : MonoBehaviour
         for (int i = 0; i < generation_radius * 2; i++) {
             for (int j = 0; j < generation_radius * 2; j++) {
 
-                addSection (startX + i, startY + j);
+                if (inside_radius(startX + i, startY + j)) {
+                    addSection (startX + i, startY + j);
+                }
 
             }
         }
 
+    }
+
+    bool inside_radius (int ax, int ay) {
+        return (x - ax) * (x - ax) + (y - ay) * (y - ay) <= generation_radius * generation_radius;
     }
 
     void addSection (int x, int y) {
@@ -88,8 +97,8 @@ public class Dungeon_Generator : MonoBehaviour
 
     public class Dungeon_Section {
 
-        private int x;
-        private int y;
+        public int x;
+        public int y;
 
         private List<GameObject> components;
 
@@ -101,6 +110,7 @@ public class Dungeon_Generator : MonoBehaviour
             components = new List<GameObject>();
 
             Vector3 position = new Vector3 (x * 24, 0, y * 24);
+            //components.Add(Instantiate (gen.enemy, position, Quaternion.Euler(0, 0, 0)));
             components.Add(Instantiate (gen.base_floor, position, Quaternion.Euler(-90, 0, 0)));
 
             double theta;
@@ -159,7 +169,14 @@ public class Dungeon_Generator : MonoBehaviour
 
         }
 
-        private string getKey () {
+        public void destroy () {
+            for (int i = 0; i < components.Count; i++) {
+                Destroy(components[i]);
+            }
+            components.Clear();
+        }
+
+        public string get_key () {
             return x.ToString() + " " + y.ToString();
         }
 

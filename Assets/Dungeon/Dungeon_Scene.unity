@@ -432,6 +432,7 @@ MonoBehaviour:
     type: 3}
   open_wall_2: {fileID: 4365450923823817846, guid: b178ca8992752d0499ecd185788f1920,
     type: 3}
+  enemy: {fileID: 2015434656898269652, guid: 25a1b0efadb966e44889fce712c8ff8d, type: 3}
   generation_radius: 3
   player: {fileID: 8357629531225733191}
   x: 0
@@ -3100,7 +3101,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8357629531225733191}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 48f22a420493bcf4a8ca3e259797484f, type: 3}
   m_Name: 
