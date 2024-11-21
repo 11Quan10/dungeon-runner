@@ -1,2 +1,18 @@
 fileFormatVersion: 2
 guid: 1d3549d620f0c5048b433a12e3380e58
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - startSectionPrefab: {instanceID: 0}
+  - straightSectionPrefab: {instanceID: 0}
+  - leftTurnSectionPrefab: {instanceID: 0}
+  - rightTurnSectionPrefab: {instanceID: 0}
+  - Player: {instanceID: 0}
+  - pistolPrefab: {fileID: 99710436301446679, guid: c866b49a7713a0d4fb0a3294df832999,
+      type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

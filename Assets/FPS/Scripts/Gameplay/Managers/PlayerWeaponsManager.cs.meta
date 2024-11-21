@@ -3,7 +3,12 @@ guid: c6b4f98e62f1d104f8658bba08e5d56f
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - WeaponCamera: {instanceID: 0}
+  - WeaponParentSocket: {instanceID: 0}
+  - DefaultWeaponPosition: {instanceID: 0}
+  - AimingWeaponPosition: {instanceID: 0}
+  - DownWeaponPosition: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

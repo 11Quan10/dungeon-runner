@@ -94,30 +94,52 @@ namespace Unity.FPS.Gameplay
         int m_WeaponSwitchNewWeaponIndex;
 
         void Start()
+{
+    ActiveWeaponIndex = -1;
+    m_WeaponSwitchState = WeaponSwitchState.Down;
+
+    m_InputHandler = GetComponent<PlayerInputHandler>();
+    DebugUtility.HandleErrorIfNullGetComponent<PlayerInputHandler, PlayerWeaponsManager>(m_InputHandler, this, gameObject);
+
+    m_PlayerCharacterController = GetComponent<PlayerCharacterController>();
+    DebugUtility.HandleErrorIfNullGetComponent<PlayerCharacterController, PlayerWeaponsManager>(
+        m_PlayerCharacterController, this, gameObject);
+
+    SetFov(DefaultFov);
+
+    OnSwitchedToWeapon += OnWeaponSwitched;
+
+    // Explicitly load and equip Pistol 1
+    GameObject pistolPrefab = Resources.Load<GameObject>("HolyPoly/Pistols/Prefabs/Pistol 1");
+    if (pistolPrefab != null)
+    {
+        GameObject pistolInstance = Instantiate(pistolPrefab, WeaponParentSocket);
+        WeaponController weaponController = pistolInstance.GetComponent<WeaponController>();
+        if (weaponController != null)
         {
-            ActiveWeaponIndex = -1;
-            m_WeaponSwitchState = WeaponSwitchState.Down;
-
-            m_InputHandler = GetComponent<PlayerInputHandler>();
-            DebugUtility.HandleErrorIfNullGetComponent<PlayerInputHandler, PlayerWeaponsManager>(m_InputHandler, this,
-                gameObject);
-
-            m_PlayerCharacterController = GetComponent<PlayerCharacterController>();
-            DebugUtility.HandleErrorIfNullGetComponent<PlayerCharacterController, PlayerWeaponsManager>(
-                m_PlayerCharacterController, this, gameObject);
-
-            SetFov(DefaultFov);
-
-            OnSwitchedToWeapon += OnWeaponSwitched;
-
-            // Add starting weapons
-            foreach (var weapon in StartingWeapons)
-            {
-                AddWeapon(weapon);
-            }
-
-            SwitchWeapon(true);
+            AddWeapon(weaponController);
+            Debug.Log("Equipped starting weapon: " + weaponController.name);
         }
+        else
+        {
+            Debug.LogError("Pistol 1 prefab is missing a WeaponController component.");
+        }
+    }
+    else
+    {
+        Debug.LogError("Pistol 1 prefab could not be found. Ensure it is in the correct folder.");
+    }
+
+    // Add any other starting weapons (if defined in the Inspector)
+    foreach (var weapon in StartingWeapons)
+    {
+        AddWeapon(weapon);
+    }
+
+    SwitchWeapon(true);
+}
+
+
 
         void Update()
         {
@@ -548,6 +570,17 @@ namespace Unity.FPS.Gameplay
 
             return distanceBetweenSlots;
         }
+
+        public void AddGun(GameObject gunPrefab)
+        {
+            WeaponController weaponController = gunPrefab.GetComponent<WeaponController>();
+            if (weaponController != null)
+            {
+                AddWeapon(weaponController);
+                Debug.Log("Gun added to inventory: " + weaponController.name);
+            }
+        }
+
 
         void OnWeaponSwitched(WeaponController newWeapon)
         {

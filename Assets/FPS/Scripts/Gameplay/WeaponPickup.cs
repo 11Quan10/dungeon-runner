@@ -20,6 +20,11 @@ namespace Unity.FPS.Gameplay
             }
         }
 
+    void AssignWeaponPrefab(GameObject gunPrefab)
+    {
+        WeaponPrefab = gunPrefab.GetComponent<WeaponController>();
+    }
+
         protected override void OnPicked(PlayerCharacterController byPlayer)
         {
             PlayerWeaponsManager playerWeaponsManager = byPlayer.GetComponent<PlayerWeaponsManager>();
