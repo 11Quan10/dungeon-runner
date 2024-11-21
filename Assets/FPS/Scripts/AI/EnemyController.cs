@@ -110,7 +110,7 @@ namespace Unity.FPS.AI
         Health m_Health;
         Actor m_Actor;
         Collider[] m_SelfColliders;
-        GameFlowManager m_GameFlowManager;
+        DungeonManager m_DungeonManager;
         bool m_WasDamagedThisFrame;
         float m_LastTimeWeaponSwapped = Mathf.NegativeInfinity;
         int m_CurrentWeaponIndex;
@@ -137,8 +137,8 @@ namespace Unity.FPS.AI
             NavMeshAgent = GetComponent<NavMeshAgent>();
             m_SelfColliders = GetComponentsInChildren<Collider>();
 
-            m_GameFlowManager = FindAnyObjectByType<GameFlowManager>();
-            DebugUtility.HandleErrorIfNullFindObject<GameFlowManager, EnemyController>(m_GameFlowManager, this);
+            m_DungeonManager = FindAnyObjectByType<DungeonManager>();
+            DebugUtility.HandleErrorIfNullFindObject<DungeonManager, EnemyController>(m_DungeonManager, this);
 
             // Subscribe to damage & death actions
             m_Health.OnDie += OnDie;
@@ -406,8 +406,8 @@ namespace Unity.FPS.AI
 
         public bool TryAtack(Vector3 enemyPosition)
         {
-            if (m_GameFlowManager.GameIsEnding)
-                return false;
+            // if (m_DungeonManager.GameIsEnding)
+            //     return false;
 
             OrientWeaponsTowards(enemyPosition);
 
