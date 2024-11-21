@@ -22,6 +22,7 @@ namespace Unity.FPS.Game
         bool startSection = true;
         int straightSections = 0;
         Queue<GameObject> instantiatedSections;
+        Queue<GameObject> enemies;
 
         [Header("Parameters")] [Tooltip("Duration of the fade-to-black at the end of the game")]
         public float EndSceneLoadDelay = 3f;
@@ -52,7 +53,6 @@ namespace Unity.FPS.Game
 
         void Awake() 
         {
-            EventManager.AddListener<AllObjectivesCompletedEvent>(OnAllObjectivesCompleted);
             EventManager.AddListener<PlayerDeathEvent>(OnPlayerDeath);
         }
 
@@ -60,6 +60,7 @@ namespace Unity.FPS.Game
         {
             AudioUtility.SetMasterVolume(1);
 
+            enemies = new Queue<GameObject>();
             instantiatedSections = new Queue<GameObject>();
             lastPosition = Player.transform.position;        // Starting point of the dungeon
             GenerateSection();
@@ -83,15 +84,27 @@ namespace Unity.FPS.Game
             }
 
             // GenerateSection();
-            Vector3 groundedPosition = Player.transform.position;
-            groundedPosition.y = 0;
-            if (Vector3.Distance(groundedPosition, lastPosition) < sectionLength * 4)
+            if (instantiatedSections.Count < 7)
             {
                 GenerateSection();
             }
+
+            if (instantiatedSections.Count > 0)
+            {
+                GameObject oldSection = instantiatedSections.Peek();
+                Vector3 groundedPosition = Player.transform.position; groundedPosition.y = 0;
+                if (Vector3.Distance(oldSection.transform.position, groundedPosition) > sectionLength)
+                {
+                    Destroy(instantiatedSections.Dequeue());
+                }
+            }
+
+            if (enemies.Count > instantiatedSections.Count)
+            {
+                Destroy(enemies.Dequeue());
+            }
         }
 
-        void OnAllObjectivesCompleted(AllObjectivesCompletedEvent evt) => EndGame(true);
         void OnPlayerDeath(PlayerDeathEvent evt) => EndGame(false);
 
         void GenerateSection()
@@ -132,17 +145,23 @@ namespace Unity.FPS.Game
 
             instantiatedSections.Enqueue(newSection);
             
-            if (randomValue <= 0.8) {
+            if (!startSection && randomValue < 0.5f) {           // 50% chance to spawn enemy
                 Vector3 randomPosition = new Vector3(lastPosition.x + sectionLength * (0.5f - Random.Range(0f, 1f)),
                                                      lastPosition.y,
                                                      lastPosition.z + sectionLength * (0.5f - Random.Range(0f, 1f)));
                 GameObject enemy = Instantiate(HoverBot, randomPosition, Quaternion.identity);
+                enemies.Enqueue(enemy);
             }
 
-            if (instantiatedSections.Count >= 20)
-            {
-                Destroy(instantiatedSections.Dequeue());
-            }
+            // if (instantiatedSections.Count > 0)
+            // {
+            //     GameObject oldSection = instantiatedSections.Peek();
+            //     Vector3 groundedPosition = Player.transform.position; groundedPosition.y = 0;
+            //     if (Vector3.Distance(oldSection.transform.position, groundedPosition) > 1.5 * sectionLength)
+            //     {
+            //         Destroy(instantiatedSections.Dequeue());
+            //     }
+            // }
             
             lastPosition += currentDirection * sectionLength;
         }
@@ -190,7 +209,6 @@ namespace Unity.FPS.Game
 
         void OnDestroy()
         {
-            EventManager.RemoveListener<AllObjectivesCompletedEvent>(OnAllObjectivesCompleted);
             EventManager.RemoveListener<PlayerDeathEvent>(OnPlayerDeath);
         }
     }
