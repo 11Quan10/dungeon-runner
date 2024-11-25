@@ -6,6 +6,7 @@ public class Dungeon_Generator : MonoBehaviour
 {
 
     public GameObject base_floor;
+    public GameObject roof;
     public GameObject center_column;
     public GameObject center_wall_1;
     public GameObject center_wall_2;
@@ -101,17 +102,25 @@ public class Dungeon_Generator : MonoBehaviour
         public int y;
 
         private List<GameObject> components;
+        private List<GameObject> enemies;
 
         public Dungeon_Section (int x, int y, Dungeon_Generator gen) {
 
             this.x = x;
             this.y = y;
 
+            enemies = new List<GameObject>();
             components = new List<GameObject>();
 
             Vector3 position = new Vector3 (x * 24, 0, y * 24);
-            //components.Add(Instantiate (gen.enemy, position, Quaternion.Euler(0, 0, 0)));
-            components.Add(Instantiate (gen.base_floor, position, Quaternion.Euler(-90, 0, 0)));
+            
+            components.Add(Instantiate (gen.base_floor, position, Quaternion.Euler(0, 0, 0)));
+            components.Add(Instantiate (gen.roof, position, Quaternion.Euler(-90, 0, 0)));
+
+            if (!(x == 0 && y == 0)) {
+                enemies.Add(Instantiate (gen.enemy, position + new Vector3(1.5f, 0, 1.5f), Quaternion.identity));
+                enemies.Add(Instantiate (gen.enemy, position + new Vector3(-1.5f, 0, -1.5f), Quaternion.identity));
+            }
 
             double theta;
             int addX, addY;
