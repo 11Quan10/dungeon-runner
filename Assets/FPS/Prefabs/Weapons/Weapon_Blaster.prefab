@@ -157,6 +157,9 @@ MonoBehaviour:
   ContinuousShootStartSfx: {fileID: 0}
   ContinuousShootLoopSfx: {fileID: 0}
   ContinuousShootEndSfx: {fileID: 0}
+  ReloadOffset: {x: 0.4, y: -0.4, z: 0}
+  ReloadMoveDuration: 0.6
+  ReloadReturnDuration: 0.6
 --- !u!114 &8745372878802205896
 MonoBehaviour:
   m_ObjectHideFlags: 0
