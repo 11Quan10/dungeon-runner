@@ -49,7 +49,6 @@ namespace Unity.FPS.Gameplay
         void Awake()
         {
             var emissionModule = SteamVfx.emission;
-            emissionModule.rateOverTimeMultiplier = 0f;
 
             m_OverheatingRenderersData = new List<RendererIndexData>();
             foreach (var renderer in GetComponentsInChildren<Renderer>(true))
