@@ -107,9 +107,6 @@ namespace Unity.FPS.AI
         int m_PathDestinationNodeIndex;
         EnemyManager m_EnemyManager;
         ActorsManager m_ActorsManager;
-
-        ScoreManager m_ScoreManager;
-
         Health m_Health;
         Actor m_Actor;
         Collider[] m_SelfColliders;
@@ -128,8 +125,6 @@ namespace Unity.FPS.AI
 
             m_ActorsManager = FindAnyObjectByType<ActorsManager>();
             DebugUtility.HandleErrorIfNullFindObject<ActorsManager, EnemyController>(m_ActorsManager, this);
-
-            m_ScoreManager = FindAnyObjectByType<ScoreManager>();
 
             m_EnemyManager.RegisterEnemy(this);
 
@@ -368,15 +363,13 @@ namespace Unity.FPS.AI
             var vfx = Instantiate(DeathVfx, DeathVfxSpawnPoint.position, Quaternion.identity);
             Destroy(vfx, 5f);
 
-            m_ScoreManager.AddScore(10);
-
             // tells the game flow manager to handle the enemy destuction
             m_EnemyManager.UnregisterEnemy(this);
 
             // loot an object
             if (TryDropItem())
             {
-                Instantiate(LootPrefab, transform.position + new Vector3(0, 1, 0), Quaternion.identity);
+                Instantiate(LootPrefab, transform.position, Quaternion.identity);
             }
 
             // this will call the OnDestroy function

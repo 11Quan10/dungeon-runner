@@ -246,90 +246,33 @@ namespace Unity.FPS.Game
                 m_LastMuzzlePosition = WeaponMuzzle.position;
             }
         }
-[Header("Reload Movement")]
-public Vector3 ReloadOffset = new Vector3(0.2f, -0.2f, 0f);
-public float ReloadMoveDuration = 0.5f;
-public float ReloadReturnDuration = 0.5f;
-private Vector3 m_InitialWeaponPosition;
-private Coroutine m_ReloadMovementCoroutine;
 
-void Start()
-{
-    if (WeaponRoot != null)
-    {
-        m_InitialWeaponPosition = WeaponRoot.transform.localPosition;
-    }
-}
-
-private System.Collections.IEnumerator ReloadMovement()
-{
-    // Move to reload offset
-    Vector3 targetPosition = m_InitialWeaponPosition + ReloadOffset;
-    float elapsedTime = 0f;
-
-    while (elapsedTime < ReloadMoveDuration)
-    {
-        WeaponRoot.transform.localPosition = Vector3.Lerp(m_InitialWeaponPosition, targetPosition, elapsedTime / ReloadMoveDuration);
-        elapsedTime += Time.deltaTime;
-        yield return null;
-    }
-
-    WeaponRoot.transform.localPosition = targetPosition;
-
-    // Wait for the reload to complete
-    yield return new WaitForSeconds(AmmoReloadDelay);
-
-    // Move back to the initial position
-    elapsedTime = 0f;
-    while (elapsedTime < ReloadReturnDuration)
-    {
-        WeaponRoot.transform.localPosition = Vector3.Lerp(targetPosition, m_InitialWeaponPosition, elapsedTime / ReloadReturnDuration);
-        elapsedTime += Time.deltaTime;
-        yield return null;
-    }
-
-    WeaponRoot.transform.localPosition = m_InitialWeaponPosition;
-}
-void UpdateAmmo()
-{
-    if (AutomaticReload && m_LastTimeShot + AmmoReloadDelay < Time.time && m_CurrentAmmo < MaxAmmo && !IsCharging)
-    {
-        // reloads weapon over time
-        m_CurrentAmmo += AmmoReloadRate * Time.deltaTime;
-
-        // limits ammo to max value
-        m_CurrentAmmo = Mathf.Clamp(m_CurrentAmmo, 0, MaxAmmo);
-
-        IsCooling = true;
-
-        // Start the reload movement coroutine
-        if (m_ReloadMovementCoroutine == null)
+        void UpdateAmmo()
         {
-            m_ReloadMovementCoroutine = StartCoroutine(ReloadMovement());
-        }
-    }
-    else
-    {
-        IsCooling = false;
+            if (AutomaticReload && m_LastTimeShot + AmmoReloadDelay < Time.time && m_CurrentAmmo < MaxAmmo && !IsCharging)
+            {
+                // reloads weapon over time
+                m_CurrentAmmo += AmmoReloadRate * Time.deltaTime;
 
-        // Stop the reload movement coroutine if reloading is complete
-        if (m_ReloadMovementCoroutine != null)
-        {
-            StopCoroutine(m_ReloadMovementCoroutine);
-            m_ReloadMovementCoroutine = null;
-            WeaponRoot.transform.localPosition = m_InitialWeaponPosition;
-        }
-    }
+                // limits ammo to max value
+                m_CurrentAmmo = Mathf.Clamp(m_CurrentAmmo, 0, MaxAmmo);
 
-    if (MaxAmmo == Mathf.Infinity)
-    {
-        CurrentAmmoRatio = 1f;
-    }
-    else
-    {
-        CurrentAmmoRatio = m_CurrentAmmo / MaxAmmo;
-    }
-}
+                IsCooling = true;
+            }
+            else
+            {
+                IsCooling = false;
+            }
+
+            if (MaxAmmo == Mathf.Infinity)
+            {
+                CurrentAmmoRatio = 1f;
+            }
+            else
+            {
+                CurrentAmmoRatio = m_CurrentAmmo / MaxAmmo;
+            }
+        }
 
         void UpdateCharge()
         {
