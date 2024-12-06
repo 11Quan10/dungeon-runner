@@ -13,7 +13,7 @@ namespace Unity.FPS.Gameplay
         [Tooltip("Particles for jetpack vfx")] public ParticleSystem[] JetpackVfx;
 
         [Header("Parameters")] [Tooltip("Whether the jetpack is unlocked at the begining or not")]
-        public bool IsJetpackUnlockedAtStart = true;
+        public bool IsJetpackUnlockedAtStart = false;
 
         [Tooltip("The strength with which the jetpack pushes the player up")]
         public float JetpackAcceleration = 7f;
