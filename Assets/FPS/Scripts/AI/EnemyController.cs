@@ -376,7 +376,7 @@ namespace Unity.FPS.AI
             // loot an object
             if (TryDropItem())
             {
-                Instantiate(LootPrefab, transform.position, Quaternion.identity);
+                Instantiate(LootPrefab, transform.position + new Vector3(0, 1, 0), Quaternion.identity);
             }
 
             // this will call the OnDestroy function
