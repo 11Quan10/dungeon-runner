@@ -107,6 +107,9 @@ namespace Unity.FPS.AI
         int m_PathDestinationNodeIndex;
         EnemyManager m_EnemyManager;
         ActorsManager m_ActorsManager;
+
+        ScoreManager m_ScoreManager;
+
         Health m_Health;
         Actor m_Actor;
         Collider[] m_SelfColliders;
@@ -125,6 +128,8 @@ namespace Unity.FPS.AI
 
             m_ActorsManager = FindAnyObjectByType<ActorsManager>();
             DebugUtility.HandleErrorIfNullFindObject<ActorsManager, EnemyController>(m_ActorsManager, this);
+
+            m_ScoreManager = FindAnyObjectByType<ScoreManager>();
 
             m_EnemyManager.RegisterEnemy(this);
 
@@ -362,6 +367,8 @@ namespace Unity.FPS.AI
             // spawn a particle system when dying
             var vfx = Instantiate(DeathVfx, DeathVfxSpawnPoint.position, Quaternion.identity);
             Destroy(vfx, 5f);
+
+            m_ScoreManager.AddScore(10);
 
             // tells the game flow manager to handle the enemy destuction
             m_EnemyManager.UnregisterEnemy(this);
