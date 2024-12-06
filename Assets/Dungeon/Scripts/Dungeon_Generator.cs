@@ -48,6 +48,7 @@ public class Dungeon_Generator : MonoBehaviour
             x = newX;
             y = newY;
 
+            // Adds new sections
             reloadSections();
 
         }
