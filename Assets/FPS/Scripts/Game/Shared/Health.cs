@@ -49,14 +49,14 @@ namespace Unity.FPS.Game
 
             float healthBefore = CurrentHealth;
             CurrentHealth -= damage;
-            CurrentHealth = Mathf.Clamp(CurrentHealth, 0f, MaxHealth);
+            //CurrentHealth = Mathf.Clamp(CurrentHealth, 0f, MaxHealth);
 
             // call OnDamage action
-            float trueDamageAmount = healthBefore - CurrentHealth;
-            if (trueDamageAmount > 0f)
-            {
-                OnDamaged?.Invoke(trueDamageAmount, damageSource);
-            }
+            //float trueDamageAmount = healthBefore - CurrentHealth;
+            //if (trueDamageAmount > 0f)
+            //{
+            //    OnDamaged?.Invoke(trueDamageAmount, damageSource);
+            //}
 
             HandleDeath();
         }
