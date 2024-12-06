@@ -10,5 +10,5 @@ Play the game from this link: `https://play.unity.com/en/games/506b0e8f-97a5-485
 4. Log in or create your Unity account to continue, and for licenses, get the free personal license
 5. Once Unity Hub is available, on the left side bar, go to `Projects` and click on `Locate` then select the `dungeon-runner`
 6. Double-click on the project and it should tell you which version of Unity to install, then just follow along the installation process
-7. Once the project is opened, go to `Assets` -> `Dungeon`, then double-click on the scene `Dungeon_Scene`
+7. Once the project is opened, go to `Assets` -> `Dungeon`, then double-click on the scene `IntroMenu`
 8. Simply press `Play` and enjoy the experience!
